@@ -4,8 +4,6 @@
 # Assignment 2 - Valid
 # Purpose: Validates files containing header information about an invoice.
 
-perms=0
-
 if [[ $# != 1 ]]
 then
   echo "Usage: $0 <file>"
@@ -18,65 +16,102 @@ then
   exit 2
 fi
 
-if [[ -r $1 && -x $1 && -w $1 ]]
+if [[ ! -f $1 ]]
 then
-  perms=1
+  echo "$1 does not exist"
+  exit 3
+fi
+
+if [[ ! -r $1 ]]
+then
+  echo "$1 is not readable"
+  exit 4
 fi
 
 if [[ $1 == *'.iso' ]]
 then
-  echo "its an iso"
   if [[ $(grep . $1 | head -2 | awk -F, '{print $3}') != *'NC' ]]
   then
     echo "Invalid state for iso, must be 'NC'"
-    exit 3
+    exit 5
   fi
 fi
 
 if [[ $1 == *'.oso' ]]
 then
-  echo "its an oso"
   if [[ $(grep . $1 | head -2 | tail -1 | awk -F, '{print $3}') == *'NC' ]]
   then
-    echo "Invalid state for iso, must be not be 'NC'"
-    exit 4
+    echo "Invalid state for oso, must be not be 'NC'"
+    exit 6
   fi
 fi
 
+if [[ $(grep . $1 | head -2 | tail -1 | awk -F, '{print $3}' | tr -d "\n " | wc -c) != 2 ]]
+then
+  echo "'$(grep . $1 | head -2 | tail -1 | awk -F, '{print $3}' | tr -d "\n ")' is the wrong length for a state abbreviation"
+  exit 7
+fi
+
+
 if [[ $(grep . $1 | head -1 | awk -F: '{print $1}') != 'customer' ]]
 then
-  echo 'Invalid first line'
-  exit 5
+  echo "Invalid first line, must start with 'customer'"
+  exit 8
 fi
 
 if [[ $(grep . $1 | head -2 | tail -1 | awk -F: '{print $1}') != 'address' || $(grep . $1 | head -2 | tail -1 | awk -F: '{print NF}') != 2 ]]
 then
-  echo 'Invalid second line'
-  exit 6
+  echo "Invalid second line, must start with 'address'"
+  exit 9
 fi
 
 if [[ $(grep . $1 | head -2 | tail -1  | awk -F, '{print NF}') != 3 ]]
 then
-  echo 'Invalid address line'
-  exit 7
+  echo 'Invalid address line, must be of the form NNN STREET NAME, CITY, ST'
+  exit 10
 fi
 
 if [[ $(grep . $1 | head -3 | tail -1 | awk -F: '{print $1}') != 'categories' || $(grep . $1 | head -3 | tail -1 | awk -F: '{print NF}') != 2 ]]
 then
-  echo 'Invalid third line'
-  exit 7
+  echo "Invalid third line, must start with 'categories'"
+  exit 11
 fi
 
 if [[ $(grep . $1 | head -4 | tail -1 | awk -F: '{print $1}') != 'items' || $(grep . $1 | head -4 | tail -1 | awk -F: '{print NF}') != 2 ]]
 then
-  echo 'Invalid fourth line'
-  exit 8
+  echo "Invalid fourth line, must start with 'items'"
+  exit 12
 fi
 
 if [[ $(grep . $1 | head -3 | tail -1 | awk -F, '{print NF}') > $(grep . $1 | head -4 | tail -1 | awk -F, '{print NF}') ]]
 then
-  echo 'less items than categories'
-  exit 9
+  echo 'There are less items than categories'
+  exit 13
+fi
+
+if [[ $(grep . $1 | head -1 | awk -F: '{print $2}') == *[Cc]ustomer* ]]
+then
+  echo "Cannot use 'customer' keyword"
+  exit 14
+fi
+
+if [[ $(grep . $1 | head -2 | tail -1 | awk -F: '{print $2}') == *[Aa]ddress* ]]
+then
+  echo "Cannot use 'address' keyword"
+  exit 15
+fi
+
+if [[ $(grep . $1 | head -3 | tail -1 | awk -F: '{print $2}') == *[Cc]ategories* ]]
+then
+  echo "Cannot use 'categories' keyword"
+  exit 16
+fi
+
+if [[ $(grep . $1 | head -4 | tail -1 | awk -F: '{print $2}') == *[Ii]tems* ]]
+then
+  echo "Cannot use 'items' keyword"
+  exit 17
 fi
 
 echo "Oh shit, didn't know you were valid like that"
+exit 0

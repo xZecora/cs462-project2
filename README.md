@@ -11,7 +11,7 @@ Authors: Brayan Mauricio-Gonzalez & Bryant Collins
 
 This project is meant to create and validate files that contain header information about an invoice.
 
-## Error Code Key
+## Error Code Key for Create
 
 1 : usage error
 
@@ -28,3 +28,19 @@ This project is meant to create and validate files that contain header informati
 7 : user entered an invalid number for items
 
 8 : output file was invalid
+
+## Error Code Key for Valid
+
+1 : usage error
+
+2 : invalid file passed as an argument
+
+3 : invalid customer header line
+
+4 : invalid address header line
+
+5 : invalid categories header line
+
+6 : invalid items header line
+
+7 : unnecessary lines at the end of the file

@@ -25,4 +25,6 @@ This project is meant to create and validate files that contain header informati
 
 6 : incorrect state length given
 
-7 : output file was invalid
+7 : user entered an invalid number for items
+
+8 : output file was invalid

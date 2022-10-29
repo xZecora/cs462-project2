@@ -119,7 +119,7 @@ if ! ./valid.sh $output
 then
   echo "ERROR: $output was invalid"
   rm $output
-  exit 7
+  exit 8
 fi
 
 echo -e "\n\"$output\" has been created for\n$(head -2 $output)"

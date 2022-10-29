@@ -30,7 +30,7 @@ fi
 
 if [[ $1 == *'.iso' ]]
 then
-  if [[ $(grep . $1 | head -2 | awk -F, '{print $3}') != *'NC' ]]
+  if [[ $(grep "[^[:space:]]" $1 | head -2 | tail -1 | awk -F, '{print $3}') != *'NC' ]]
   then
     echo "Invalid state for iso, must be 'NC'"
     exit 5
@@ -39,79 +39,78 @@ fi
 
 if [[ $1 == *'.oso' ]]
 then
-  if [[ $(grep . $1 | head -2 | tail -1 | awk -F, '{print $3}') == *'NC' ]]
+  if [[ $(grep "[^[:space:]]" $1 | head -2 | tail -1 | awk -F, '{print $3}') == *'NC' ]]
   then
     echo "Invalid state for oso, must be not be 'NC'"
     exit 6
   fi
 fi
 
-if [[ $(grep . $1 | head -2 | tail -1 | awk -F, '{print $3}' | tr -d "\n " | wc -c) != 2 ]]
+if [[ $(grep "[^[:space:]]" $1 | head -2 | tail -1 | awk -F, '{print $3}' | tr -d "\n " | wc -c) != 2 ]]
 then
-  echo "'$(grep . $1 | head -2 | tail -1 | awk -F, '{print $3}' | tr -d "\n ")' is the wrong length for a state abbreviation"
+  echo "'$(grep "[^[:space:]]" $1 | head -2 | tail -1 | awk -F, '{print $3}' | tr -d "\n ")' is the wrong length for a state abbreviation"
   exit 7
 fi
 
 
-if [[ $(grep . $1 | head -1 | awk -F: '{print $1}') != 'customer' ]]
+if [[ $(grep "[^[:space:]]" $1 | head -1 | awk -F: '{print $1}') != 'customer' ]]
 then
   echo "Invalid first line, must start with 'customer'"
   exit 8
 fi
 
-if [[ $(grep . $1 | head -2 | tail -1 | awk -F: '{print $1}') != 'address' || $(grep . $1 | head -2 | tail -1 | awk -F: '{print NF}') != 2 ]]
+if [[ $(grep "[^[:space:]]" $1 | head -2 | tail -1 | awk -F: '{print $1}') != 'address' || $(grep . $1 | head -2 | tail -1 | awk -F: '{print NF}') != 2 ]]
 then
   echo "Invalid second line, must start with 'address'"
   exit 9
 fi
 
-if [[ $(grep . $1 | head -2 | tail -1  | awk -F, '{print NF}') != 3 ]]
+if [[ $(grep "[^[:space:]]" $1 | head -2 | tail -1  | awk -F, '{print NF}') != 3 ]]
 then
   echo 'Invalid address line, must be of the form NNN STREET NAME, CITY, ST'
   exit 10
 fi
 
-if [[ $(grep . $1 | head -3 | tail -1 | awk -F: '{print $1}') != 'categories' || $(grep . $1 | head -3 | tail -1 | awk -F: '{print NF}') != 2 ]]
+if [[ $(grep "[^[:space:]]" $1 | head -3 | tail -1 | awk -F: '{print $1}') != 'categories' || $(grep . $1 | head -3 | tail -1 | awk -F: '{print NF}') != 2 ]]
 then
   echo "Invalid third line, must start with 'categories'"
   exit 11
 fi
 
-if [[ $(grep . $1 | head -4 | tail -1 | awk -F: '{print $1}') != 'items' || $(grep . $1 | head -4 | tail -1 | awk -F: '{print NF}') != 2 ]]
+if [[ $(grep "[^[:space:]]" $1 | head -4 | tail -1 | awk -F: '{print $1}') != 'items' || $(grep . $1 | head -4 | tail -1 | awk -F: '{print NF}') != 2 ]]
 then
   echo "Invalid fourth line, must start with 'items'"
   exit 12
 fi
 
-if [[ $(grep . $1 | head -3 | tail -1 | awk -F, '{print NF}') > $(grep . $1 | head -4 | tail -1 | awk -F, '{print NF}') ]]
+if [[ $(grep "[^[:space:]]" $1 | head -3 | tail -1 | awk -F, '{print NF}') > $(grep . $1 | head -4 | tail -1 | awk -F, '{print NF}') ]]
 then
   echo 'There are less items than categories'
   exit 13
 fi
 
-if [[ $(grep . $1 | head -1 | awk -F: '{print $2}') == *[Cc]ustomer* ]]
+if [[ $(grep "[^[:space:]]" $1 | head -3 | tail -1 | awk -F: '{print $2}') == *[Cc][Uu][Ss][Tt][Oo][Mm][Ee][Rr]* ]]
 then
   echo "Cannot use 'customer' keyword"
   exit 14
 fi
 
-if [[ $(grep . $1 | head -2 | tail -1 | awk -F: '{print $2}') == *[Aa]ddress* ]]
+if [[ $(grep "[^[:space:]]" $1 | head -3 | tail -1 | awk -F: '{print $2}') == *[Aa][Dd][Dd][Rr][Ee][Ss][Ss]* ]]
 then
   echo "Cannot use 'address' keyword"
   exit 15
 fi
 
-if [[ $(grep . $1 | head -3 | tail -1 | awk -F: '{print $2}') == *[Cc]ategories* ]]
+if [[ $(grep "[^[:space:]]" $1 | head -3 | tail -1 | awk -F: '{print $2}') == *[Cc][Aa][Tt][Ee][Gg][Oo][Rr][Ii][Ee][Ss]* ]]
 then
   echo "Cannot use 'categories' keyword"
   exit 16
 fi
 
-if [[ $(grep . $1 | head -4 | tail -1 | awk -F: '{print $2}') == *[Ii]tems* ]]
+if [[ $(grep "[^[:space:]]" $1 | head -3 | tail -1 | awk -F: '{print $2}') == *[Ii][Tt][Ee][Mm][Ss]* ]]
 then
   echo "Cannot use 'items' keyword"
   exit 17
 fi
 
-echo "Oh shit, didn't know you were valid like that"
-exit 0
+

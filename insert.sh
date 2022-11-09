@@ -19,9 +19,9 @@ then
 fi
 
 # grabbing the categories from the input file
-categories=$(grep "[^[:space:]]" $1 | head -3 | tail -1 | cut -d":" -f2 | tr "," "|")
+categories=$(grep "categories:" $1 | cut -d":" -f2 | tr "," "|")
 # grabbing the item counts from the input file and placing them into an array
-items=($(grep "[^[:space:]]" $1 | head -4 | tail -1 | cut -d":" -f2 | tr "," " "))
+items=($(grep "items:" $1 | cut -d":" -f2 | tr "," " "))
 
 # checking if a 2nd argument was given
 if [[ "$2" ]]
@@ -56,10 +56,8 @@ records=0
 
 # looping through the categories
 for i in ${!categories[@]}; do
-  # echo "$i: ${categories[$i]} : ${items[$i]}"
   # getting the number of entries that already exist for the current category
   entries=$(cat "$1" | grep -i "${categories[$i]}:" | wc -l)
-  # echo "$((${items[$i]} - $entries))"
 
   j=0
   # only inserting for missing records

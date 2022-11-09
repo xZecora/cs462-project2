@@ -138,8 +138,8 @@ then
   exit 6
 fi
 
-if [[ $(grep "[^[:space:]]" $1 | head -5 | tail -1) != $items ]]
-then
-  echo "ERROR: unnecessary lines at the end of the file"
-  exit 7
-fi
+# if [[ $(grep "[^[:space:]]" $1 | head -5 | tail -1) != $items ]]
+# then
+#   echo "ERROR: unnecessary lines at the end of the file"
+#   exit 7
+# fi

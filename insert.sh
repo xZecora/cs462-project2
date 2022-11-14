@@ -77,9 +77,10 @@ do
     echo -n "Please enter a price per unit of $name > "
     read price
     # validating price entered
-    if [[ $(echo "${price//[0-9]/}") != "" ]]
+    if [[ ! $(echo "$price" | grep -E "^[0-9]+(\.[0-9][0-9])?$") ]]
     then
-      echo "ERROR: $price is an invalid number"
+      echo "ERROR: $price is an invalid price"
+      echo -e "\n$records records added to \"$1\" invoice"
       exit 5
     fi
 
@@ -88,7 +89,8 @@ do
     # validating units entered
     if [[ $(echo "${units//[0-9]/}") != "" ]]
     then
-      echo "ERROR: $units is an invalid number"
+      echo "ERROR: $units is an invalid number of units"
+      echo -e "\n$records records added to \"$1\" invoice"
       exit 5
     fi
 

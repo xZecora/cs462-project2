@@ -29,3 +29,10 @@ Please enter the amount of Eggs units to purchase > 1
 ------------------------------------------------------------------------------------------
 (base) % insert.sh example2.oso electronics
 electronics is not a valid category for this invoice
+------------------------------------------------------------------------------------------
+(base) % insert.sh example.oso homewares
+Please enter the name of a homewares item > tupperware
+Please enter a price per unit of tupperware > 34j
+ERROR: 34j is an invalid price
+
+0 records added to "example.oso" invoice

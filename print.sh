@@ -12,7 +12,7 @@ then
   exit 2
 fi
 
-table="\\\documentclass{article}\n\\\begin{document}\n\\\begin{center}\n\\\begin{tabular}{|rrrrr|}\n\\\hline\n"
+table="\\\documentclass{article}\n\\\pagestyle{empty}\n\\\begin{document}\n\\\begin{center}\n\\\begin{tabular}{|rrrrr|}\n\\\hline\n"
 table=$table"\multicolumn{5}{|c|}{$(grep . $1 | head -1 | awk -F: '{print $2}')}\\\\\\\\\n"
 table=$table"\multicolumn{5}{|c|}{$(grep . $1 | head -2 | tail -1 | awk -F: '{print $2}')}\\\\\\\\\n"
 table=$table"\\\hline\n"
@@ -38,7 +38,7 @@ table=$table"\\\end{tabular}\n\\\end{center}\n\\\end{document}"
 
 echo -e $table > tmp.tex
 pdflatex tmp.tex  &> /dev/null && rm tmp.aux tmp.log
-okular tmp.pdf
+zathura tmp.pdf
 
 rm tmp.tex tmp.pdf
 

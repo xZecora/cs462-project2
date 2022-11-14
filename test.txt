@@ -1,118 +1,31 @@
-CREATE TESTS
+INSERT TESTS
 ------------------------------------------------------------------------------------------
-(base) % ./create.sh 
-usage: create.sh -i|-o filename
+(base) % insert.sh                  
+usage: insert.sh filename [category]
 ------------------------------------------------------------------------------------------
-(base) % ./create.sh -f test
-ERROR: invalid flag
+(base) % insert.sh munkey.oso 
+ERROR: munkey.oso was an invalid file
 ------------------------------------------------------------------------------------------
-(base) % ./create.sh -i test
-Please enter customer name > Brayan M
-Please enter street address > 213 Grad Ave
-Please enter city > Sylva
-Please enter the fields that comprise the order > Toys Food Clothes       
-Please enter the number of "Toys" items you want to purchase > 10
-Please enter the number of "Food" items you want to purchase > 20
-Please enter the number of "Clothes" items you want to purchase > 440
+(base) % insert.sh example.oso
+ERROR: example.oso is not writable
+------------------------------------------------------------------------------------------
+(base) % insert.sh example2.oso produce
+Please enter the name of a produce item > carrots
+Please enter a price per unit of carrots > 3.99
+Please enter the amount of carrots units to purchase > 10
 
-"test.iso" has been created for
-customer:Brayan M
-address:213 Grad Ave, Sylva, NC
-------------------------------------------------------------------------------------------
-(base) % ./create.sh -o test
-Please enter customer name > Bryant Collins
-Please enter street address > 566 Foo Drive
-Please enter city > Raleigh 
-Please enter state > NC
-Please enter the fields that comprise the order > socks keycaps 
-Please enter the number of "socks" items you want to purchase > 3 
-Please enter the number of "keycaps" items you want to purchase > 50
-ERROR: Invalid state for an oso file, must be not be 'NC'
-ERROR: test.oso was invalid
-------------------------------------------------------------------------------------------
-(base) % ./create.sh -o list
-Please enter customer name > Bryant C      
-Please enter street address > 401 Tree Rd 
-Please enter city > Seattle
-Please enter state > WA 
-Please enter the fields that comprise the order > candy electronics cups
-Please enter the number of "candy" items you want to purchase > 7
-Please enter the number of "electronics" items you want to purchase > 23
-Please enter the number of "cups" items you want to purchase > 100
+Please enter the name of a produce item > milk   
+Please enter a price per unit of milk > 1.45
+Please enter the amount of milk units to purchase > 2  
 
-"list.oso" has been created for
-customer:Bryant C
-address:401 Tree Rd, Seattle, WA
-------------------------------------------------------------------------------------------
-(base) % ./create.sh -i order
-Please enter customer name > Brayan Mauricio-Gonzalez
-Please enter street address > 113 Marine Ford Dr
-Please enter city > Alabasta
-Please enter the fields that comprise the order > lamps shoes pillows food
-Please enter the number of "lamps" items you want to purchase > 53
-Please enter the number of "shoes" items you want to purchase > 2
-Please enter the number of "pillows" items you want to purchase > 1 
-Please enter the number of "food" items you want to purchase > 9
+Please enter the name of a produce item > Eggs
+Please enter a price per unit of Eggs > 9
+Please enter the amount of Eggs units to purchase > 1
 
-"order.iso" has been created for
-customer:Brayan Mauricio-Gonzalez
-address:113 Marine Ford Dr, Alabasta, NC
+3 records added to "example2.oso" invoice
 ------------------------------------------------------------------------------------------
-(base) % ./create.sh -i order
-ERROR: order.iso already exists
+(base) % insert.sh example2.oso produce
+0 records added to "example2.oso" invoice
 ------------------------------------------------------------------------------------------
-(base) % ./create.sh -i order2
-Please enter customer name > Jason Bourne
-Please enter street address > 555 Hallow Lane
-Please enter city > Raleigh
-Please enter the fields that comprise the order > 
-Please enter the fields that comprise the order > 
-Please enter the fields that comprise the order > 
-Please enter the fields that comprise the order > 
-Please enter the fields that comprise the order > 
-Please enter the fields that comprise the order > Rocks Clothes
-Please enter the number of "Rocks" items you want to purchase > W  
-ERROR: W is an invalid number
-------------------------------------------------------------------------------------------
-(base) % ./create.sh -o shopping2 
-Please enter customer name > Brayan M
-Please enter street address > 502 Ellen Dr
-Please enter city > Judaculla
-Please enter state > Maine
-ERROR: Maine is not the correct length for a state abbreviation: (5)
-------------------------------------------------------------------------------------------
-(base) % ./create.sh -o -i
-ERROR: needs filename
-------------------------------------------------------------------------------------------
-(base) % ./create.sh file1 file2 
-ERROR: needs flag
-------------------------------------------------------------------------------------------
-(base) % ./create.sh -i file1 file2
-usage: create.sh -i|-o filename
-
-VALID TESTS
-------------------------------------------------------------------------------------------
-(base) % ./valid.sh 
-Usage: ./valid.sh <file>
-------------------------------------------------------------------------------------------
-% ./valid.sh broken4.oso broken.oso
-Usage: ./valid.sh <file>
-------------------------------------------------------------------------------------------
-(base) % ./valid.sh munkey.txt
-ERROR: munkey.txt is not accessible
-------------------------------------------------------------------------------------------
-(base) % ./valid.sh test.txt  
-ERROR: ".txt" is not a valid file extension
-------------------------------------------------------------------------------------------
-(base) % ./valid.sh broken.oso
-ERROR: Invalid categories header line, must be of the form 'categories:<category>[,<category>]*'
-------------------------------------------------------------------------------------------
-(base) % ./valid.sh broken2.oso   
-ERROR: Missing header line
-Last header line: categories:Clothes,Toys
-------------------------------------------------------------------------------------------
-(base) % ./valid.sh broken3.iso
-ERROR: Invalid state for an iso file, must be 'NC'
-------------------------------------------------------------------------------------------
-(base) % ./valid.sh broken4.oso   
-ERROR: Invalid state for an oso file, must be not be 'NC'
+(base) % insert.sh example2.oso electronics
+electronics is not a valid category for this invoice

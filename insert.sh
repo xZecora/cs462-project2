@@ -18,6 +18,12 @@ then
   exit 2
 fi
 
+if [[ ! -w "$1" ]]
+then
+  echo "ERROR: $1 is not writable"
+  exit 3
+fi
+
 # grabbing the categories from the input file
 categories=$(grep "categories:" $1 | cut -d":" -f2 | tr "," "|")
 # grabbing the item counts from the input file and placing them into an array
@@ -30,7 +36,7 @@ then
   if [[ ! $(echo "$2" | grep -iE "($categories)$") ]]
   then
     echo "$2 is not a valid category for this invoice"
-    exit 3
+    exit 4
   else
     # converting to all lowercase
     categories=$(echo "$categories" | tr "|" " " | tr '[:upper:]' '[:lower:]')
@@ -55,7 +61,8 @@ records=0
 # echo "" >> $1 # for spacing ?
 
 # looping through the categories
-for i in ${!categories[@]}; do
+for i in ${!categories[@]}
+do
   # getting the number of entries that already exist for the current category
   entries=$(cat "$1" | grep -i "${categories[$i]}:" | wc -l)
 
@@ -68,10 +75,22 @@ for i in ${!categories[@]}; do
     read name # validate?
 
     echo -n "Please enter a price per unit of $name > "
-    read price # validate?
+    read price
+    # validating price entered
+    if [[ $(echo "${price//[0-9]/}") != "" ]]
+    then
+      echo "ERROR: $price is an invalid number"
+      exit 5
+    fi
 
     echo -n "Please enter the amount of $name units to purchase > "
-    read units # validate?
+    read units
+    # validating units entered
+    if [[ $(echo "${units//[0-9]/}") != "" ]]
+    then
+      echo "ERROR: $units is an invalid number"
+      exit 5
+    fi
 
     # appending record to the invoice file
     echo "${categories[$i]}: $name, $price, $units" >> $1

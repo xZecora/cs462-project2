@@ -25,8 +25,9 @@ grep . $1 | tail -$lc > tmp.txt
 
 temp=""
 
-for i in $(grep . tmp.txt | sed 's/ //g')
+for i in $(grep . tmp.txt | awk -F, '{printf "%s,%.2f,%d\n", $1, $2, $3}' )
 do
+  echo $i
   if [[ $numSort == 1 ]]
   then
     temp=$temp"$(echo $i | awk -F, '{$4=$2 * $3;printf "%.2f,%s,%.2f,%d", $4, $1, $2, $3}')\n"
@@ -48,9 +49,6 @@ else
   echo -e $temp | grep . | sort > tmp.txt
 fi
 
-
-#cat tmp.txt
-
 table="\\\documentclass{article}\n\\\pagestyle{empty}\n\\\begin{document}\n\\\begin{center}\n\\\begin{tabular}{|rrrrr|}\n\\\hline\n"
 table=$table"\multicolumn{5}{|c|}{$(grep . $1 | head -1 | awk -F: '{print $2}')}\\\\\\\\\n"
 table=$table"\multicolumn{5}{|c|}{$(grep . $1 | head -2 | tail -1 | awk -F: '{print $2}')}\\\\\\\\\n"
@@ -62,12 +60,11 @@ i=1
 while [[ $i != $(($lc+1)) ]]
 do
   line=$(grep . tmp.txt | head -$i | tail -1)
-  echo $line
   table=$table"$(echo $line | awk -F: '{print $1}')&"
-  table=$table"$(echo $line | awk -F'[:,]' '{print $2}')&"
-  table=$table"$(echo $line | awk -F'[:,]' '{print $3}')&"
-  table=$table"$(echo $line | awk -F'[:,]' '{print $4}')&"
-  table=$table"$(echo $line | awk -F'[:,]' '{print $5}')\\\\\\\\\n"
+  table=$table"$(echo $line | awk -F'[:,]' '{print $2}' | sed 's/^ //')&"
+  table=$table"$(echo $line | awk -F'[:,]' '{print $3}' | sed 's/^ //')&"
+  table=$table"$(echo $line | awk -F'[:,]' '{print $4}' | sed 's/^ //')&"
+  table=$table"$(echo $line | awk -F'[:,]' '{print $5}' | sed 's/^ //')\\\\\\\\\n"
   i=$(($i+1))
 done
 
@@ -76,7 +73,7 @@ table=$table"\\\hline\n"
 table=$table"\\\end{tabular}\n\\\end{center}\n\\\end{document}"
 
 echo -e $table > tmp.tex
-pdflatex tmp.tex  && rm tmp.aux tmp.log
+pdflatex tmp.tex &> /dev/null  && rm tmp.aux tmp.log
 okular tmp.pdf
 
-rm tmp.txt tmp.tex tmp.pdf
+#rm tmp.txt tmp.tex tmp.pdf

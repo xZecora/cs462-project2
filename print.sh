@@ -12,23 +12,62 @@ then
   exit 2
 fi
 
+if [[ $# == 2 && $2 == "-c" ]]
+then
+  numSort=1
+else
+  numSort=0
+fi
+
+lc=$(($(grep . $1 | wc -l) - 4))
+
+grep . $1 | tail -$lc > tmp.txt
+
+temp=""
+
+for i in $(grep . tmp.txt | sed 's/ //g')
+do
+  if [[ $numSort == 1 ]]
+  then
+    temp=$temp"$(echo $i | awk -F, '{$4=$2 * $3;printf "%.2f,%s,%.2f,%d", $4, $1, $2, $3}')\n"
+  else
+    temp=$temp"$(echo $i | awk -F, '{$4=$2 * $3;printf "%s,%.2f,%d,%.2f", $1, $2, $3, $4}')\n"
+  fi
+done
+
+if [[ $numSort == 1 ]]
+then
+  echo -e $temp | grep . | sort -n > tmp.txt
+  temp2=""
+  for i in $(cat tmp.txt)
+  do
+    temp2=$temp2"$(echo $i | awk -F, '{printf "%s,%.2f,%d,%.2f", $2, $3, $4, $1}')\n"
+  done
+  echo -e $temp2 | grep . > tmp.txt
+else
+  echo -e $temp | grep . | sort > tmp.txt
+fi
+
+
+#cat tmp.txt
+
 table="\\\documentclass{article}\n\\\pagestyle{empty}\n\\\begin{document}\n\\\begin{center}\n\\\begin{tabular}{|rrrrr|}\n\\\hline\n"
 table=$table"\multicolumn{5}{|c|}{$(grep . $1 | head -1 | awk -F: '{print $2}')}\\\\\\\\\n"
 table=$table"\multicolumn{5}{|c|}{$(grep . $1 | head -2 | tail -1 | awk -F: '{print $2}')}\\\\\\\\\n"
 table=$table"\\\hline\n"
 table=$table"Category&Item&Cost&Quantity&Total\\\\\\\\\n"
 table=$table"\\\hline\\\hline\n"
-lc=$(($(grep . $1 | wc -l) - 4))
 
 i=1
 while [[ $i != $(($lc+1)) ]]
 do
-  line=$(grep . $1 | head -$((4+$i)) | tail -1)
+  line=$(grep . tmp.txt | head -$i | tail -1)
+  echo $line
   table=$table"$(echo $line | awk -F: '{print $1}')&"
-  table=$table"$(echo $line | awk -F'[:,]' '{gsub(/^ /,"",$2);print $2}')&"
-  table=$table"$(echo $line | awk -F'[:,]' '{gsub(/^ /,"",$3);print $3}')&"
-  table=$table"$(echo $line | awk -F'[:,]' '{gsub(/^ /,"",$4);print $4}')&"
-  table=$table"$(echo $(echo $line | awk -F'[:,]' '{gsub(/^ /,"",$4);print $4}')*$(echo $line | awk -F'[:,]' '{gsub(/^ /,"",$4);print $3}') | bc)\\\\\\\\\n"
+  table=$table"$(echo $line | awk -F'[:,]' '{print $2}')&"
+  table=$table"$(echo $line | awk -F'[:,]' '{print $3}')&"
+  table=$table"$(echo $line | awk -F'[:,]' '{print $4}')&"
+  table=$table"$(echo $line | awk -F'[:,]' '{print $5}')\\\\\\\\\n"
   i=$(($i+1))
 done
 
@@ -37,15 +76,7 @@ table=$table"\\\hline\n"
 table=$table"\\\end{tabular}\n\\\end{center}\n\\\end{document}"
 
 echo -e $table > tmp.tex
-pdflatex tmp.tex  &> /dev/null && rm tmp.aux tmp.log
-zathura tmp.pdf
+pdflatex tmp.tex  && rm tmp.aux tmp.log
+okular tmp.pdf
 
-rm tmp.tex tmp.pdf
-
-# redirect error to /dev/null cause it still works and throws a pointless error
-#echo -e $table | tbl | groff > trying.ps
-#okular trying.ps
-#rm trying.ps
-
-#groff output >> output.ps
-#okular output.ps
+rm tmp.txt tmp.tex tmp.pdf

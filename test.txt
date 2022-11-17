@@ -1,9 +1,9 @@
 INSERT TESTS
 ------------------------------------------------------------------------------------------
-(base) % insert.sh                  
+(base) % insert.sh
 usage: insert.sh filename [category]
 ------------------------------------------------------------------------------------------
-(base) % insert.sh munkey.oso 
+(base) % insert.sh munkey.oso
 ERROR: munkey.oso was an invalid file
 ------------------------------------------------------------------------------------------
 (base) % insert.sh example.oso
@@ -14,9 +14,9 @@ Please enter the name of a produce item > carrots
 Please enter a price per unit of carrots > 3.99
 Please enter the amount of carrots units to purchase > 10
 
-Please enter the name of a produce item > milk   
+Please enter the name of a produce item > milk
 Please enter a price per unit of milk > 1.45
-Please enter the amount of milk units to purchase > 2  
+Please enter the amount of milk units to purchase > 2
 
 Please enter the name of a produce item > Eggs
 Please enter a price per unit of Eggs > 9
@@ -36,3 +36,17 @@ Please enter a price per unit of tupperware > 34j
 ERROR: 34j is an invalid price
 
 0 records added to "example.oso" invoice
+
+PRINT TESTS
+------------------------------------------------------------------------------------------
+(base) % print.sh
+Usage: ./print.sh <filename> [-c]
+------------------------------------------------------------------------------------------
+(base) % print.sh -c
+ERROR: -c was an invalid vile
+------------------------------------------------------------------------------------------
+(base) % print.sh example.oso
+(provides valid output in the format it should with no residual files)
+------------------------------------------------------------------------------------------
+(base) % print.sh example.oso -c
+(provides valid output in the format it should with no residual files)

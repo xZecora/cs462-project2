@@ -1,33 +1,35 @@
-# cs462-project2
-# CS462 - Project 2: Invoice Scripts
+# CS462 - Project 3: Modifying and Printing an Invoice
 
 Authors: Brayan Mauricio-Gonzalez & Bryant Collins
 
 ## Date of Submission 
 
-10/28/2022
+11/16/2022
 
 ## Description 
 
-This project is meant to create and validate files that contain header information about an invoice.
+This project is meant to insert lines into an invoice as well as print out an invoice into 
+a nicely formatted table.
 
-## Error Code Key for Create
+## Error Code Key for Insert
 
 1 : usage error
 
-2 : missing flag argument
+2 : invalid invoice file given
 
-3 : missing filename argument
+3 : invoice file is missing write permissions
 
-4 : invalid flag provided
+4 : invalid category name given
 
-5 : intended output file already exists
+5 : invalid number entered
 
-6 : incorrect state length given
+## Error Code Key for Print
 
-7 : user entered an invalid number for items
+1 : usage error
 
-8 : output file was invalid
+2 : invalid invoice file given
+
+3 : invalid flag argument
 
 ## Error Code Key for Valid
 

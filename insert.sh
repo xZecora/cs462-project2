@@ -104,6 +104,7 @@ do
 
     j=$(($j+1))
     records=$(($records+1))
+    name=""
   done
 done
 

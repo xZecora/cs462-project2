@@ -24,11 +24,13 @@ then
   exit 3
 fi
 
-# get linecount for easy use
-lc=$(($(grep "[^[:space:]]" $1 | wc -l) - 4))
+categories=$(grep "categories:" $1 | cut -d":" -f2 | tr "," "|")
 
 # tack on the the total cost at the end of each line
-grep "[^[:space:]]" $1 | tail -$lc | awk -F, '{$4=$2*$3;printf "%s,%.2f,%d,%.2f\n", $1, $2, $3, $4}' > tmp.txt
+grep -iE "^($categories):" $1 | awk -F, '{$4=$2*$3;printf "%s,%.2f,%d,%.2f\n", $1, $2, $3, $4}' > tmp.txt
+
+# get linecount for easy use
+lc=$(grep -iE "^($categories):" $1 | wc -l)
 
 # sort by either the category or total cost
 if [[ $# == 2 && $2 == "-c" ]]

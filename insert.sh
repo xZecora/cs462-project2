@@ -7,7 +7,7 @@
 # checking for correct number of arguments
 if [[ $# < 1 || $# > 2 ]]
 then
-  echo "usage: $0 filename [category]"
+  echo "usage: $0 <filename> [category]"
   exit 1
 fi
 
@@ -18,6 +18,7 @@ then
   exit 2
 fi
 
+# checking that we can write to the file
 if [[ ! -w "$1" ]]
 then
   echo "ERROR: $1 is not writable"
@@ -71,8 +72,11 @@ do
   while [[ $j < $((${items[$i]} - $entries)) ]]
   do
     # prompting for the info for a single record
-    echo -n "Please enter the name of a ${categories[$i]} item > "
-    read name # validate?
+    while [[ $name == "" ]];
+    do
+      echo -n "Please enter the name of a ${categories[$i]} item > "
+      read name
+    done
 
     echo -n "Please enter a price per unit of $name > "
     read price
@@ -98,8 +102,8 @@ do
     echo "${categories[$i]}: $name, $price, $units" >> $1
     echo "" # for spacing
 
-    ((j++))
-    ((records++))
+    j=$(($j+1))
+    records=$(($records+1))
   done
 done
 

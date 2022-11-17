@@ -10,18 +10,25 @@ then
   exit 1
 fi
 
-# if -c is present sort by ascending order of total cost
-if [[ $# == 2 && $2 != "-c" ]]
+# validating the input file
+if ! ./valid.sh $1 > /dev/null
 then
-  echo "Invalid flag"
+  echo "ERROR: $1 was an invalid file"
   exit 2
 fi
 
+# if -c is present sort by ascending order of total cost
+if [[ $# == 2 && $2 != "-c" ]]
+then
+  echo "ERROR: Invalid flag"
+  exit 3
+fi
+
 # get linecount for easy use
-lc=$(($(grep . $1 | wc -l) - 4))
+lc=$(($(grep "[^[:space:]]" $1 | wc -l) - 4))
 
 # tack on the the total cost at the end of each line
-grep . $1 | tail -$lc | awk -F, '{$4=$2*$3;printf "%s,%.2f,%d,%.2f\n", $1, $2, $3, $4}' > tmp.txt
+grep "[^[:space:]]" $1 | tail -$lc | awk -F, '{$4=$2*$3;printf "%s,%.2f,%d,%.2f\n", $1, $2, $3, $4}' > tmp.txt
 
 # sort by either the category or total cost
 if [[ $# == 2 && $2 == "-c" ]]
@@ -33,8 +40,8 @@ fi
 
 # the basic beginning of the latex document
 table="\\\documentclass{article}\n\\\pagestyle{empty}\n\\\begin{document}\n\\\begin{center}\n\\\begin{tabular}{|rrrrr|}\n\\\hline\n"
-table=$table"\multicolumn{5}{|c|}{$(grep . $1 | head -1 | awk -F: '{print $2}')}\\\\\\\\\n"
-table=$table"\multicolumn{5}{|c|}{$(grep . $1 | head -2 | tail -1 | awk -F: '{print $2}')}\\\\\\\\\n"
+table=$table"\multicolumn{5}{|c|}{$(grep "[^[:space:]]" $1 | head -1 | awk -F: '{print $2}')}\\\\\\\\\n"
+table=$table"\multicolumn{5}{|c|}{$(grep "[^[:space:]]" $1 | head -2 | tail -1 | awk -F: '{print $2}')}\\\\\\\\\n"
 table=$table"\\\hline\n"
 table=$table"Category&Item&Cost&Quantity&Total\\\\\\\\\n"
 table=$table"\\\hline\\\hline\n"
@@ -43,7 +50,7 @@ table=$table"\\\hline\\\hline\n"
 i=1
 while [[ $i != $(($lc+1)) ]]
 do
-  line=$(grep . tmp.txt | head -$i | tail -1)
+  line=$(grep "[^[:space:]]" tmp.txt | head -$i | tail -1)
   table=$table"$(echo $line | awk -F: '{print $1}')&"
   table=$table"$(echo $line | awk -F'[:,]' '{print $2}')&"
   table=$table"$(echo $line | awk -F'[:,]' '{print $3}')&"
